@@ -1,0 +1,4 @@
+gradio
+huggingface_hub
+sentence-transformers
+faiss-cpu

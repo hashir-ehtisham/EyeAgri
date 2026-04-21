@@ -1,0 +1,8 @@
+gradio
+pandas
+ultralytics
+pillow
+huggingface_hub
+sentence-transformers
+faiss-cpu
+numpy

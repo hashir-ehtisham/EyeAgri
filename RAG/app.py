@@ -79,7 +79,7 @@ def eyeagri_respond(
         history[-1]["content"] = f"Error: {str(e)}"
         yield history
 
-# --- CSV Helpers ---
+# CSV Helpers
 def handle_csv_upload(file):
     if file is None:
         return None, "", gr.update(interactive=False)
@@ -98,16 +98,19 @@ def copy_csv_to_prompt():
     return f"Analyze this agricultural data:\n\n{text}", "📋 Data copied! Switch to Chat tab."
 
 # --- UI Layout ---
-with gr.Blocks(title="EyeAgri AI") as eyeagri_demo:
+with gr.Blocks(title="EyeAgri AI", theme=gr.themes.Soft(primary_hue=gr.themes.colors.green, secondary_hue=gr.themes.colors.emerald)) as eyeagri_demo:
     with gr.Sidebar():
         gr.LoginButton()
-        system_msg = gr.Textbox(value="You are EyeAgri, an AI agriculture expert, your job is to analyze the logged data and provide report and recommendations of whole data not just few rows. Also you are not allowed to answer any prompts other than agriculture.", label="System message", visible = False)
+        system_msg = gr.Textbox(value="You are EyeAgri, an AI agriculture expert, your job is to analyze the logged data and provide report and recommendations of whole data not just few rows. Also you are not allowed to answer any prompts other than agriculture. But if someone asks you about the authors or tech stack of Project then you can tell.", label="System message", visible = False)
         max_toks = gr.Slider(1, 4096, 2048, label="Max Tokens", visible = False)
         temp = gr.Slider(0.1, 2.0, 0.7, label="Temperature", visible = False)
         top_p_val = gr.Slider(0.1, 1.0, 0.95, label="Top-p", visible = False)
 
     with gr.Tabs():
         with gr.Tab("📊 Upload Data"):
+            gr.Markdown("# Upload Final Data to 🌾EyeAgri ")
+            gr.Markdown("**Developed by:** Hashir Ehtisham.")
+
             csv_file = gr.File(label="Upload CSV", file_types=[".csv"])
             csv_status = gr.Markdown("Ready.")
             copy_btn = gr.Button("📋 Copy Data to Chat", variant="primary", interactive=False)
@@ -115,6 +118,8 @@ with gr.Blocks(title="EyeAgri AI") as eyeagri_demo:
             copy_status = gr.Markdown("")
 
         with gr.Tab("🌾 Chat with EyeAgri"):
+            gr.Markdown("# 🌾EyeAgri Chat")
+            gr.Markdown("**Developed by:** Hashir Ehtisham.")
             chatbot = gr.Chatbot(label="EyeAgri Assistant", height=500)
             msg_input = gr.Textbox(placeholder="Ask about crops, soil, or pests...", label="Your Input", lines=2)
             with gr.Row():

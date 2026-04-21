@@ -64,7 +64,7 @@ def analyze_and_update(img, selected_date, selected_patch, csv_file):
     if not selected_patch:
         return None, "⚠️ Please select a patch.", None, gr.update(visible=False)
 
-    # YOLO Inference 
+    # YOLO Inference
     results = model.predict(source=img, conf=0.25)
 
     # Visual output (BGR → RGB)
@@ -80,7 +80,7 @@ def analyze_and_update(img, selected_date, selected_patch, csv_file):
 
     confidences = {names[i]: probs[i] for i in range(len(names))}
 
-    # ── Determine disease label ──────────────────────────────────────
+    # Determine disease label
     top_lower = top_class.lower()
     if "healthy" in top_lower:
         disease_label = None          # no update needed
@@ -159,13 +159,36 @@ def get_final_csv():
     modified_csv_path = tmp.name
     return tmp.name
 
-with gr.Blocks(theme=gr.themes.Soft()) as demo:
+
+# Green Theme
+green_theme = gr.themes.Soft(
+    primary_hue=gr.themes.colors.green,
+    secondary_hue=gr.themes.colors.emerald,
+    neutral_hue=gr.themes.colors.gray,
+).set(
+    button_primary_background_fill="#16a34a",
+    button_primary_background_fill_hover="#15803d",
+    button_primary_text_color="#ffffff",
+    button_secondary_background_fill="#bbf7d0",
+    button_secondary_background_fill_hover="#86efac",
+    button_secondary_text_color="#14532d",
+    block_label_text_color="#15803d",
+    block_title_text_color="#14532d",
+    link_text_color="#16a34a",
+)
+
+# Gradio UI
+with gr.Blocks(theme=green_theme) as demo:
 
     gr.Markdown("# YOLOv11 (nano) 🌾 EyeAgri Healthy vs Diseased Classification")
     gr.Markdown(
         "**Workflow:** Upload your crop log CSV → Select date & patch → Upload a crop image → Click **Analyze** → Download the updated CSV anytime."
     )
+    gr.Markdown(
+        "**Developed by:** Hashir Ehtisham."
+    )
 
+    # Step 1: CSV Upload
     with gr.Group():
         gr.Markdown("### 📂 Step 1 — Upload Crop Log CSV")
         csv_input      = gr.File(label="Upload CSV File", file_types=[".csv"])
@@ -179,8 +202,8 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
             outputs=[csv_status, date_dropdown, patch_dropdown]
         )
 
-    gr.Markdown("---")
 
+    # Step 2: Image + Analysis
     gr.Markdown("### 🔬 Step 2 — Upload Crop Image & Analyze")
 
     with gr.Row():
@@ -192,11 +215,13 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
             output_img   = gr.Image(type="pil", label="Analysis Result")
             output_label = gr.Label(label="Confidence Scores")
 
+    # Step 3: Results + Download
     gr.Markdown("---")
     gr.Markdown("### 📊 Step 3 — Results & CSV Update")
 
     analysis_status  = gr.Textbox(label="Analysis & CSV Update Status", interactive=False, lines=6)
 
+    # Auto-shown download (appears only when disease detected after Analyze)
     auto_download    = gr.File(label="⬇️ Updated CSV (this analysis)", visible=False, interactive=False)
 
     gr.Markdown("---")
@@ -206,6 +231,7 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
     download_final_btn = gr.Button("⬇️ Download Final Updated CSV", variant="secondary")
     final_csv_file     = gr.File(label="Final CSV File", interactive=False)
 
+    # Wire up events
     analyze_btn.click(
         fn=analyze_and_update,
         inputs=[input_img, date_dropdown, patch_dropdown, csv_input],

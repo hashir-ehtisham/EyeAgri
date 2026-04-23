@@ -12,9 +12,9 @@ import faiss
 
 # LOCAL CONFIG — adjust paths here if needed
 
-MODEL_PATH   = r"" #path to yolo's pytorch file
-DATASET_PATH = r"" #path to RAG dataset
-HF_TOKEN     = "" #enter HF token here
+MODEL_PATH   = r"" #path to pytorch file of YOLO
+DATASET_PATH = r"" #path to .txt dataset RAG
+HF_TOKEN     = "" #access token (read)
 
 
 # YOLO Model
